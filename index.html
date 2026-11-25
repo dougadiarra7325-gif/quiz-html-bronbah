@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz HTML - Bronbah Tech</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(160deg,#0a1128,#16205b 60%,#0a1128);min-height:100vh;color:#fff;display:flex;align-items:center;justify-content:center;padding:16px}
+.card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:28px 22px;max-width:520px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.brand{text-align:center;font-size:13px;letter-spacing:3px;color:#9fb3ff;text-transform:uppercase;margin-bottom:6px}
+h1{text-align:center;font-size:22px;margin-bottom:18px}
+h1 span{color:#4d7cff}
+.top{display:flex;justify-content:space-between;font-size:13px;color:#9fb3ff;margin-bottom:8px}
+.bar{height:8px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden;margin-bottom:22px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#4d7cff,#38e8c6);width:0;transition:width .3s}
+.q{font-size:17px;line-height:1.45;margin-bottom:18px;font-weight:600}
+.opt{display:block;width:100%;text-align:left;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);color:#fff;border-radius:14px;padding:14px 16px;font-size:15px;margin-bottom:12px;cursor:pointer;transition:.2s}
+.opt:hover{background:rgba(77,124,255,.25)}
+.opt.good{border-color:#2ee6a8;background:rgba(46,230,168,.25)}
+.opt.bad{border-color:#ff5c7a;background:rgba(255,92,122,.25)}
+.fb{display:none;background:rgba(255,255,255,.08);border-left:3px solid #4d7cff;border-radius:0 10px 10px 0;padding:12px 14px;font-size:14px;line-height:1.5;margin-bottom:16px}
+.btn{display:block;width:100%;background:linear-gradient(90deg,#4d7cff,#2f5fe0);border:none;color:#fff;font-size:16px;font-weight:700;padding:14px;border-radius:14px;cursor:pointer;margin-top:6px}
+.score{text-align:center;font-size:64px;font-weight:800;color:#4d7cff;margin:10px 0}
+.msg{text-align:center;font-size:17px;margin-bottom:22px;line-height:1.5}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="card" id="app">
+  <div class="brand">Bronbah Tech · Formation Web</div>
+  <h1>Quiz <span>HTML</span></h1>
+  <div id="quiz">
+    <div class="top"><span id="step">Question 1/20</span><span id="pts">0 point</span></div>
+    <div class="bar"><i id="fill"></i></div>
+    <div class="q" id="qtext"></div>
+    <div id="opts"></div>
+    <div class="fb" id="fb"></div>
+    <button class="btn" id="next" disabled>Suivant</button>
+  </div>
+  <div id="end" class="hide">
+    <div class="score" id="final">0/20</div>
+    <p class="msg" id="msg"></p>
+    <button class="btn" onclick="location.reload()">Recommencer</button>
+  </div>
+</div>
+<script>
+const QS=[["Que signifie HTML et à quoi sert-il ?",["HyperText Markup Language, le langage qui structure une page web","Un langage pour programmer des jeux","Un logiciel de navigation"],0,"HTML = HyperText Markup Language. C'est le squelette de la page : titres, paragraphes, images, liens."],["Quelle balise crée un paragraphe de texte ?",["<par>","<p>","<text>"],1,"<p>Mon texte</p>"],["Quelle balise donne le titre le plus important d'une page ?",["<titre>","<h6>","<h1>"],2,"<h1> est le plus important, les titres descendent jusqu'à <h6>."],["Comment crée-t-on un lien vers un autre site ?",["<a href=\"https://...\">Clique ici</a>","<link https://...>","<url>clique</url>"],0,"<a href=\"https://exemple.com\">Clique ici</a>"],["Comment affiche-t-on une image ?",["<image src=\"photo.jpg\">","<img src=\"photo.jpg\" alt=\"description\">","<photo>photo.jpg</photo>"],1,"<img src=\"photo.jpg\" alt=\"description\"> (balise auto-fermante, pas de </img>)"],["Quelle est la différence entre <head> et <body> ?",["Aucune, c'est pareil","<head> = infos invisibles, <body> = ce que le visiteur voit","<head> = le haut de la page, <body> = le bas"],1,"<head> = infos invisibles (titre de l'onglet, encodage, lien CSS). <body> = tout ce que le visiteur voit."],["À quoi sert <!DOCTYPE html> en début de fichier ?",["À déclarer un commentaire","À dire au navigateur que le document est en HTML5","À charger une police"],1,"Sans lui, la page peut s'afficher en mode \"vieux\"."],["Comment écrire un commentaire dans le code ?",["// ceci est un commentaire","/* commentaire */","<!-- ceci est un commentaire -->"],2,"Les commentaires HTML sont <!-- comme ceci --> et n'apparaissent pas sur la page."],["Quel attribut est obligatoire sur la balise <img> ?",["src","alt","href"],0,"src indique le chemin du fichier image."],["Quelle est la différence entre <ol> et <ul> ?",["<ol> = liste numérotée, <ul> = liste à puces","<ol> = liste à puces, <ul> = liste numérotée","Aucune différence"],0,"<ol> = ordered list (1. 2. 3.), <ul> = unordered list (puces)."],["Quelles balises construisent un tableau ?",["<table>, <tr>, <th>, <td>","<tableau>, <ligne>, <cellule>","<grid>, <row>, <col>"],0,"<table> le tableau, <tr> une ligne, <th> une cellule d'en-tête, <td> une cellule normale."],["Quel attribut ouvre un lien dans un nouvel onglet ?",["newtab=\"oui\"","target=\"_blank\"","open=\"new\""],1,"target=\"_blank\" sur la balise <a>."],["À quoi sert l'attribut alt sur une image ?",["À changer la taille de l'image","À afficher un texte si l'image ne charge pas (accessibilité)","À rendre l'image cliquable"],1,"Texte affiché si l'image ne charge pas, lu par les lecteurs d'écran, bon pour le référencement."],["Comment crée-t-on un bouton d'envoi dans un formulaire ?",["<bouton>Envoyer</bouton>","<input type=\"submit\">","<envoyer>"],1,"<input type=\"submit\"> ou <button type=\"submit\">Envoyer</button>."],["Quelle balise crée un formulaire ?",["<form action=\"...\" method=\"...\">","<formulaire>","<input type=\"form\">"],0,"action = où envoyer les données, method = comment (get ou post)."],["Quelle est la différence entre type=\"text\" et type=\"password\" ?",["Aucune","text : visible, password : masqué par des points","password : plus lent"],1,"Le champ password masque ce que tu tapes."],["Quelle balise crée un champ de texte multiligne ?",["<input type=\"long\">","<textarea>","<multiline>"],1,"<textarea rows=\"4\"></textarea>"],["Comment associe-t-on une étiquette <label> à son champ ?",["Le for du label doit valoir l'id du champ","En les mettant sur la même ligne","Avec l'attribut name"],0,"<label for=\"nom\">Nom</label> + <input id=\"nom\">"],["Cite le rôle d'une balise sémantique HTML5",["<header> = en-tête de page, <nav> = menu de navigation","<header> = un titre quelconque","Les balises sémantiques n'existent pas"],0,"<header>, <nav>, <section>, <article>, <footer> donnent du sens aux zones de la page."],["Comment relie-t-on une page HTML à un fichier CSS ?",["<style src=\"style.css\">","<link rel=\"stylesheet\" href=\"style.css\"> dans le <head>","<css>style.css</css>"],1,"<link rel=\"stylesheet\" href=\"style.css\"> placé dans le <head>."]];
+let i=0,score=0,answered=false;
+const el=id=>document.getElementById(id);
+function show(){
+  answered=false;
+  el('step').textContent='Question '+(i+1)+'/20';
+  el('pts').textContent=score+(score>1?' points':' point');
+  el('fill').style.width=(i/QS.length*100)+'%';
+  el('qtext').textContent=QS[i][0];
+  el('fb').style.display='none';
+  const nx=el('next');nx.disabled=true;nx.textContent=i===QS.length-1?'Voir mon score':'Suivant';
+  const box=el('opts');box.innerHTML='';
+  QS[i][1].forEach((t,k)=>{
+    const b=document.createElement('button');b.className='opt';b.textContent=String.fromCharCode(65+k)+'. '+t;
+    b.onclick=()=>{if(answered)return;answered=true;
+      [...box.children].forEach(c=>c.disabled=true);
+      if(k===QS[i][2]){b.classList.add('good');score++;el('pts').textContent=score+(score>1?' points':' point');el('fb').innerHTML='✅ Bonne réponse !<br>'+QS[i][3];}
+      else{b.classList.add('bad');box.children[QS[i][2]].classList.add('good');el('fb').innerHTML='❌ La bonne réponse était : <b>'+QS[i][1][QS[i][2]]+'</b><br>'+QS[i][3];}
+      el('fb').style.display='block';nx.disabled=false;};
+    box.appendChild(b);});
+}
+el('next').onclick=()=>{
+  if(i<QS.length-1){i++;show();}
+  else{
+    el('quiz').classList.add('hide');el('end').classList.remove('hide');
+    el('fill').style.width='100%';
+    el('final').textContent=score+'/20';
+    let m;
+    if(score>=17)m='Excellent ! Bases solides 💪';
+    else if(score>=13)m='Bien ! Quelques trous à combler.';
+    else if(score>=9)m='À consolider. Relis les points ratés.';
+    else m='On reprend les bases ensemble, pas de panique !';
+    el('msg').textContent=m+' Envoie ton score à Fo pour la suite.';
+  }};
+show();
+</script>
+</body>
+</html>
